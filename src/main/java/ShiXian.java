@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 public class ShiXian {
+    private static final Task[] tasks = new Task[100];
     public static void main(String[] args) {
          /*
         String logo = " ____        _        \n"
@@ -10,7 +11,7 @@ public class ShiXian {
                 + "|____/ \\__,_|_|\\_\\___|\n";
         System.out.println("Hello from\n" + logo);*/
         Scanner scanner = new Scanner(System.in);
-        String[] storedList = new String[100];
+
         System.out.println("Hello! I'm Shi Xian.");
         System.out.println("What can I do for you?");
         System.out.println("---------------------------------");
@@ -24,14 +25,32 @@ public class ShiXian {
             }
             else if (userInput.equals("list")){
                 for(int i = 0; i < k; i++){
-                    System.out.println(i+1+":"+storedList[i]);
+                    System.out.println((i+1)+":"+tasks[i]);
 
                 }
             }
-            storedList[k] = userInput;
-            k++;
-            System.out.println("---------------------------");
-            System.out.println("added: "+userInput);
+            else if (userInput.startsWith("mark ")) {
+                int taskIndex = Integer.parseInt(userInput.substring(5)) - 1;
+                if (taskIndex >= 0 && taskIndex < k ) {
+                    tasks[taskIndex].markAsDone();
+                    System.out.println("marked");
+                }
+                System.out.println("---------------------------");
+            }
+            else if (userInput.startsWith("unmark ")) {
+                int taskIndex = Integer.parseInt(userInput.substring(7)) - 1;
+                if (taskIndex >= 0 && taskIndex < k + 1) {
+                    tasks[taskIndex].markAsNotDone();
+                    System.out.println("unmarked");
+                }
+                System.out.println("---------------------------");
+            }
+            else {
+                tasks[k] = new Task(userInput);
+                k++;
+                System.out.println("---------------------------");
+                System.out.println("added: "+userInput);
+            }
         }
         System.out.println("Bye. Hope to see you again soon!");
     }
