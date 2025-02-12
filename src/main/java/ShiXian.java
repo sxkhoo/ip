@@ -2,7 +2,8 @@ import java.util.Scanner;
 
 public class ShiXian {
     private static final Task[] tasks = new Task[100];
-    private static int k =0;
+    private static int k = 0;
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -11,97 +12,98 @@ public class ShiXian {
         System.out.println("---------------------------------");
 
         while (true) {
-            String userInput = scanner.nextLine();
+            try {
+                String userInput = scanner.nextLine();
 
-            if (userInput.equals("bye")) {
-                System.out.println("Goodbye! See you next time.");
-                System.out.println("---------------------------");
-                break;
-            }
-            else if (userInput.equals("list")) {
-                listTasks();
-            }
-            else if (userInput.startsWith("mark ")) {
-                markTask(userInput);
-            }
-            else if (userInput.startsWith("unmark ")) {
-                unmarkTask(userInput);
-            }
-            else if (userInput.startsWith("todo ")) {
-                addTask(new ToDo(userInput.substring(5)));
-                System.out.println("Now you have " + k + " task(s).");
-            }
-            else if (userInput.startsWith("deadline ")) {
-                String[] parts = userInput.substring(9).split(" /by ", 2);
-                if (parts.length == 2) {
-                    addTask(new Deadline(parts[0], parts[1]));
-                    System.out.println("Now you have " + k + " task(s).");
+                if (userInput.equals("bye")) {
+                    System.out.println("Goodbye! See you next time.");
+                    System.out.println("---------------------------");
+                    break;
+                } else if (userInput.equals("list")) {
+                    listTasks();
+                } else if (userInput.startsWith("mark ")) {
+                    markTask(userInput);
+                } else if (userInput.startsWith("unmark ")) {
+                    unmarkTask(userInput);
+                } else if (userInput.startsWith("todo ")) {
+                    addTask(new ToDo(userInput.substring(5)));
+                } else if (userInput.startsWith("deadline ")) {
+                    handleDeadline(userInput);
+                } else if (userInput.startsWith("event ")) {
+                    handleEvent(userInput);
                 } else {
-                    System.out.println("Invalid deadline format! Use: deadline <task> /by <date/time>");
+                    throw new SXException("Invalid command");
                 }
-            }
-            else if (userInput.startsWith("event ")) {
-                String[] parts = userInput.substring(6).split(" /from ", 2);
-                if (parts.length == 2) {
-                    String[] timeParts = parts[1].split(" /to ", 2);
-                    if (timeParts.length == 2) {
-                        addTask(new Event(parts[0], timeParts[0], timeParts[1]));
-                        System.out.println("Now you have " + k + " task(s).");
-                    } else {
-                        System.out.println("Invalid event format! Use: event <task> /from <start> /to <end>");
-                    }
-                } else {
-                    System.out.println("Invalid event format! Use: event <task> /from <start> /to <end>");
-                }
-            }
-            else {
-                System.out.println("Invalid command");
+            } catch (SXException e) {
+                System.out.println("Error: " + e.getMessage());
             }
         }
         scanner.close();
     }
-    private static void addTask(Task task) {
-        if (k < tasks.length) {
-            tasks[k++] = task;
-            System.out.println("Added: " + task);
-        } else {
-            System.out.println("Task storage is full!");
+
+    private static void addTask(Task task) throws SXException {
+        if (k >= tasks.length) {
+            throw new SXException("Task storage is full!");
         }
+        tasks[k++] = task;
+        System.out.println("Added: " + task);
+        System.out.println("Now you have " + k + " task(s).\n");
     }
 
     private static void listTasks() {
-        System.out.println("Tasks:");
-        for (int i = 0; i < k; i++) {
-            System.out.println((i + 1) + ". " + tasks[i]);
+        if (k == 0) {
+            System.out.println("No tasks available.");
+        } else {
+            System.out.println("Tasks:");
+            for (int i = 0; i < k; i++) {
+                System.out.println((i + 1) + ". " + tasks[i]);
+            }
         }
     }
 
-    private static void markTask(String userInput) {
+    private static void markTask(String userInput) throws SXException {
         try {
             int index = Integer.parseInt(userInput.substring(5)) - 1;
-            if (index >= 0 && index < k) {
-                tasks[index].markAsDone();
-                System.out.println("Marked as done: " + tasks[index]);
-            } else {
-                System.out.println("Invalid task number.");
+            if (index < 0 || index >= k) {
+                throw new SXException("Invalid task number.");
             }
+            tasks[index].markAsDone();
+            System.out.println("Marked as done: " + tasks[index]);
         } catch (NumberFormatException e) {
-            System.out.println("Please enter a valid task number.");
+            throw new SXException("Please enter a valid task number.");
         }
     }
 
-    private static void unmarkTask(String userInput) {
+    private static void unmarkTask(String userInput) throws SXException {
         try {
             int index = Integer.parseInt(userInput.substring(7)) - 1;
-            if (index >= 0 && index < k) {
-                tasks[index].markAsNotDone();
-                System.out.println("Marked as not done: " + tasks[index]);
-            } else {
-                System.out.println("Invalid task number.");
+            if (index < 0 || index >= k) {
+                throw new SXException("Invalid task number.");
             }
+            tasks[index].markAsNotDone();
+            System.out.println("Marked as not done: " + tasks[index]);
         } catch (NumberFormatException e) {
-            System.out.println("Please enter a valid task number.");
+            throw new SXException("Please enter a valid task number.");
         }
     }
-}
 
+    private static void handleDeadline(String userInput) throws SXException {
+        String[] parts = userInput.substring(9).split(" by ", 2);
+        if (parts.length != 2) {
+            throw new SXException("Invalid deadline format! Use: deadline <task> by <date/time>");
+        }
+        addTask(new Deadline(parts[0], parts[1]));
+    }
+
+    private static void handleEvent(String userInput) throws SXException {
+        String[] parts = userInput.substring(6).split(" from ", 2);
+        if (parts.length != 2) {
+            throw new SXException("Invalid event format! Use: event <task> from <start> to <end>");
+        }
+        String[] timeParts = parts[1].split(" to ", 2);
+        if (timeParts.length != 2) {
+            throw new SXException("Invalid event format! Use: event <task> from <start> to <end>");
+        }
+        addTask(new Event(parts[0], timeParts[0], timeParts[1]));
+    }
+}
