@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import tasks.*;
 
 public class ShiXian {
     private static final Task[] tasks = new Task[100];
