@@ -1,9 +1,10 @@
-import java.util.Scanner;
 import tasks.*;
+import java.io.*;
+import java.util.*;
 
 public class ShiXian {
-    private static final Task[] tasks = new Task[100];
-    private static int k = 0;
+    private static final String FILE_PATH = "./data/tasks.txt";
+    private static final List<Task> tasks = new ArrayList<>();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -14,7 +15,7 @@ public class ShiXian {
 
         while (true) {
             try {
-                String userInput = scanner.nextLine();
+                String userInput = scanner.nextLine().trim();
 
                 if (userInput.equals("bye")) {
                     System.out.println("Goodbye! See you next time.");
@@ -46,21 +47,18 @@ public class ShiXian {
     }
 
     private static void addTask(Task task) throws SXException {
-        if (k >= tasks.length) {
-            throw new SXException("Task storage is full!");
-        }
-        tasks[k++] = task;
+        tasks.add(task);
+        saveTasksToFile();
         System.out.println("Added: " + task);
-        System.out.println("Now you have " + k + " task(s).\n");
+        System.out.println("Left: " + tasks.size() + " task(s).");
     }
 
     private static void listTasks() {
-        if (k == 0) {
+        if (tasks.isEmpty()) {
             System.out.println("No tasks available.");
         } else {
-            System.out.println("Tasks:");
-            for (int i = 0; i < k; i++) {
-                System.out.println((i + 1) + ". " + tasks[i]);
+            for (int i = 0; i < tasks.size(); i++) {
+                System.out.println((i + 1) + ". " + tasks.get(i));
             }
         }
     }
@@ -68,11 +66,12 @@ public class ShiXian {
     private static void markTask(String userInput) throws SXException {
         try {
             int index = Integer.parseInt(userInput.substring(5)) - 1;
-            if (index < 0 || index >= k) {
+            if (index < 0 || index >= tasks.size()) {
                 throw new SXException("Invalid task number.");
             }
-            tasks[index].markAsDone();
-            System.out.println("Marked as done: " + tasks[index]);
+            tasks.get(index).markAsDone();
+            saveTasksToFile();
+            System.out.println("Marked as done: " + tasks.get(index));
         } catch (NumberFormatException e) {
             throw new SXException("Please enter a valid task number.");
         }
@@ -81,35 +80,49 @@ public class ShiXian {
     private static void unmarkTask(String userInput) throws SXException {
         try {
             int index = Integer.parseInt(userInput.substring(7)) - 1;
-            if (index < 0 || index >= k) {
+            if (index < 0 || index >= tasks.size()) {
                 throw new SXException("Invalid task number.");
             }
-            tasks[index].markAsNotDone();
-            System.out.println("Marked as not done: " + tasks[index]);
+            tasks.get(index).markAsNotDone();
+            saveTasksToFile();
+            System.out.println("Marked as not done: " + tasks.get(index));
         } catch (NumberFormatException e) {
             throw new SXException("Please enter a valid task number.");
         }
     }
 
     private static void handleDeadline(String userInput) throws SXException {
-        String[] parts = userInput.substring(9).split(" by ", 2);
+        String[] parts = userInput.substring(9).split(" /by ", 2);
         if (parts.length != 2) {
-            throw new SXException("Invalid deadline format! Use: deadline <task> by <date/time>");
+            throw new SXException("Invalid deadline format! Use: deadline <task> /by <date/time>");
         }
         addTask(new Deadline(parts[0], parts[1]));
     }
 
     private static void handleEvent(String userInput) throws SXException {
-        String[] parts = userInput.substring(6).split(" from ", 2);
+        String[] parts = userInput.substring(6).split(" /from ", 2);
         if (parts.length != 2) {
-            throw new SXException("Invalid event format! Use: event <task> from <start> to <end>");
+            throw new SXException("Invalid event format! Use: event <task> /from <start> /to <end>");
         }
-        String[] timeParts = parts[1].split(" to ", 2);
+        String[] timeParts = parts[1].split(" /to ", 2);
         if (timeParts.length != 2) {
-            throw new SXException("Invalid event format! Use: event <task> from <start> to <end>");
+            throw new SXException("Invalid event format! Use: event <task> /from <start> /to <end>");
         }
         addTask(new Event(parts[0], timeParts[0], timeParts[1]));
     }
+
+
+    private static void saveTasksToFile() {
+        try {
+            File file = new File(FILE_PATH);
+            FileWriter writer = new FileWriter(file);
+            for (Task task : tasks) {
+                writer.write(task + "\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving tasks to file.");
+
     private static void deleteTask(String userInput) throws SXException {
         try {
             int index = Integer.parseInt(userInput.substring(7)) - 1;
@@ -126,6 +139,7 @@ public class ShiXian {
             System.out.println( k + " task(s) left.");
         } catch (NumberFormatException e) {
             throw new SXException("Please enter a valid task number.");
+
         }
     }
 }
