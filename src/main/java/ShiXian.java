@@ -122,24 +122,19 @@ public class ShiXian {
             writer.close();
         } catch (IOException e) {
             System.out.println("Error saving tasks to file.");
-
+        }
+    }
     private static void deleteTask(String userInput) throws SXException {
         try {
             int index = Integer.parseInt(userInput.substring(7)) - 1;
-            if (index < 0 || index >= k) {
+            if (index < 0 || index >= tasks.size()) {
                 throw new SXException("Invalid task number.");
             }
-            System.out.println("Deleted: " + tasks[index]);
-
-            for (int i = index; i < k - 1; i++) {
-                tasks[i] = tasks[i + 1];
-            }
-            tasks[k - 1] = null;
-            k--;
-            System.out.println( k + " task(s) left.");
+            System.out.println("Deleted: " + tasks.remove(index));
+            saveTasksToFile();
+            System.out.println("Now you have " + tasks.size() + " task(s).\n");
         } catch (NumberFormatException e) {
             throw new SXException("Please enter a valid task number.");
-
         }
     }
 }
