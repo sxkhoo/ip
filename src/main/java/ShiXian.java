@@ -33,6 +33,9 @@ public class ShiXian {
                     handleDeadline(userInput);
                 } else if (userInput.startsWith("event ")) {
                     handleEvent(userInput);
+                }
+                else if (userInput.startsWith("delete ")) {
+                        deleteTask(userInput);
                 } else {
                     throw new SXException("Invalid command");
                 }
@@ -108,6 +111,7 @@ public class ShiXian {
         addTask(new Event(parts[0], timeParts[0], timeParts[1]));
     }
 
+
     private static void saveTasksToFile() {
         try {
             File file = new File(FILE_PATH);
@@ -118,6 +122,24 @@ public class ShiXian {
             writer.close();
         } catch (IOException e) {
             System.out.println("Error saving tasks to file.");
+
+    private static void deleteTask(String userInput) throws SXException {
+        try {
+            int index = Integer.parseInt(userInput.substring(7)) - 1;
+            if (index < 0 || index >= k) {
+                throw new SXException("Invalid task number.");
+            }
+            System.out.println("Deleted: " + tasks[index]);
+
+            for (int i = index; i < k - 1; i++) {
+                tasks[i] = tasks[i + 1];
+            }
+            tasks[k - 1] = null;
+            k--;
+            System.out.println( k + " task(s) left.");
+        } catch (NumberFormatException e) {
+            throw new SXException("Please enter a valid task number.");
+
         }
     }
 }
