@@ -1,8 +1,8 @@
-import java.util.Scanner;
-
+import java.util.*;
+import java.io.*;
 public class ShiXian {
-    private static final Task[] tasks = new Task[100];
-    private static int k =0;
+    private static final String FILE_PATH = "./data/tasks.txt";
+    private static final List<Task> tasks = new ArrayList<>();
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -29,13 +29,13 @@ public class ShiXian {
             }
             else if (userInput.startsWith("todo ")) {
                 addTask(new ToDo(userInput.substring(5)));
-                System.out.println("Now you have " + k + " task(s).");
+
             }
             else if (userInput.startsWith("deadline ")) {
                 String[] parts = userInput.substring(9).split(" /by ", 2);
                 if (parts.length == 2) {
                     addTask(new Deadline(parts[0], parts[1]));
-                    System.out.println("Now you have " + k + " task(s).");
+
                 } else {
                     System.out.println("Invalid deadline format! Use: deadline <task> /by <date/time>");
                 }
@@ -46,7 +46,7 @@ public class ShiXian {
                     String[] timeParts = parts[1].split(" /to ", 2);
                     if (timeParts.length == 2) {
                         addTask(new Event(parts[0], timeParts[0], timeParts[1]));
-                        System.out.println("Now you have " + k + " task(s).");
+                        System.out.println("Now you have " + tasks.size() + " task(s).");
                     } else {
                         System.out.println("Invalid event format! Use: event <task> /from <start> /to <end>");
                     }
@@ -61,27 +61,25 @@ public class ShiXian {
         scanner.close();
     }
     private static void addTask(Task task) {
-        if (k < tasks.length) {
-            tasks[k++] = task;
-            System.out.println("Added: " + task);
-        } else {
-            System.out.println("Task storage is full!");
-        }
+        tasks.add(task);
+        saveTasks();
+        System.out.println("Added: " + task);
+        System.out.println("Have:" + tasks.size() + " task(s).");
     }
 
     private static void listTasks() {
         System.out.println("Tasks:");
-        for (int i = 0; i < k; i++) {
-            System.out.println((i + 1) + ". " + tasks[i]);
+        for (int i = 0; i < tasks.size(); i++) {
+            System.out.println((i + 1) + ". " + tasks.get(i));
         }
     }
-
     private static void markTask(String userInput) {
         try {
             int index = Integer.parseInt(userInput.substring(5)) - 1;
-            if (index >= 0 && index < k) {
-                tasks[index].markAsDone();
-                System.out.println("Marked as done: " + tasks[index]);
+            if (index >= 0 && index < tasks.size()) {
+                tasks.get(index).markAsDone();
+                System.out.println("Marked as done: " + tasks.get(index));
+                saveTasks();
             } else {
                 System.out.println("Invalid task number.");
             }
@@ -93,9 +91,10 @@ public class ShiXian {
     private static void unmarkTask(String userInput) {
         try {
             int index = Integer.parseInt(userInput.substring(7)) - 1;
-            if (index >= 0 && index < k) {
-                tasks[index].markAsNotDone();
-                System.out.println("Marked as not done: " + tasks[index]);
+            if (index >= 0 && index < tasks.size()) {
+                tasks.get(index).markAsNotDone();
+                saveTasks();
+                System.out.println("Marked as not done: " + tasks.get(index));
             } else {
                 System.out.println("Invalid task number.");
             }
@@ -103,5 +102,20 @@ public class ShiXian {
             System.out.println("Please enter a valid task number.");
         }
     }
+
+    private static void saveTasks() {
+        try {
+            File file = new File(FILE_PATH);
+
+            FileWriter writer = new FileWriter(file);
+            for (Task task : tasks) {
+                writer.write(task + "\n");
+            }
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving tasks to file.");
+        }
+    }
+
 }
 
