@@ -2,7 +2,7 @@ import java.io.IOException;
 import tasks.*;
 public class ShiXian {
     private final Storage storage;
-    private final TaskList tasks;
+    private TaskList tasks;
     private final Ui ui;
     private final Parser parser;
 
