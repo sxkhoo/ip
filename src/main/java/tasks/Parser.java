@@ -38,6 +38,11 @@ public class Parser {
                     handleDelete(words, tasks,ui,storage);
                     break;
 
+                case "find":
+                    handleFind(words, tasks, ui);
+                    break;
+
+
                 default:
                     throw new SXException("Invalid command.");
             }
@@ -121,4 +126,14 @@ public class Parser {
         ui.showMessage(tasks.deleteTask(index));
         storage.save(tasks.getTasks());
     }
+    private void handleFind(String[] words, TaskList tasks, Ui ui) throws SXException {
+        if (words.length < 2 || words[1].trim().isEmpty()) {
+            throw new SXException("Please enter a keyword to search.");
+        }
+
+        String keyword = words[1].trim();
+        String result = tasks.findTasks(keyword);
+        ui.showMessage(result);
+    }
+
 }

@@ -56,4 +56,23 @@ public class TaskList {
         tasks.get(index).markAsNotDone();
         return "Marked as not done: " + tasks.get(index);
     }
+    public String findTasks(String keyword) {
+        List<Task> matchingTasks = new ArrayList<>();
+
+        for (Task task : tasks) {
+            if (task.description.toLowerCase().contains(keyword.toLowerCase())) {
+                matchingTasks.add(task);
+            }
+        }
+
+        if (matchingTasks.isEmpty()) {
+            return "No matching tasks found.";
+        }
+
+        StringBuilder result = new StringBuilder("Here are the matching tasks in your list:\n");
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            result.append((i + 1)).append(". ").append(matchingTasks.get(i)).append("\n");
+        }
+        return result.toString();
+    }
 }
