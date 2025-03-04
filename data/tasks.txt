@@ -1,0 +1,3 @@
+T | 0 | w
+E | 0 | rr | rrr | d
+D | 0 | ee | d
