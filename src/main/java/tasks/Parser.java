@@ -23,19 +23,19 @@ public class Parser {
                     break;
 
                 case "todo":
-                    handleTodo(words, tasks, ui, storage);
+                    handleTodo(words, tasks, storage);
                     break;
 
                 case "deadline":
-                    handleDeadline(words, tasks, ui, storage);
+                    handleDeadline(words, tasks, storage);
                     break;
 
                 case "event":
-                    handleEvent(words, tasks, ui, storage);
+                    handleEvent(words, tasks, storage);
                     break;
 
                 case "delete":
-                    handleDelete(words, tasks, ui, storage);
+                    handleDelete(words, tasks,ui,storage);
                     break;
 
                 default:
@@ -70,36 +70,38 @@ public class Parser {
     }
 
     // Handles adding Todo tasks
-    private void handleTodo(String[] words, TaskList tasks, Ui ui, Storage storage) throws SXException {
-        // ✅ Ensure task description is present
+    private void handleTodo(String[] words, TaskList tasks, Storage storage) throws SXException {
         if (words.length < 2 || words[1].trim().isEmpty()) {
             throw new SXException("Todo description cannot be empty.");
         }
-
-        // ✅ Create and add the task
         Task task = new ToDo(words[1].trim());
         tasks.addTask(task);
-
-        // ✅ Save updated tasks to file
         storage.save(tasks.getTasks());
-
-        // ✅ Show confirmation message
-        ui.showMessage("Added new ToDo task: " + task);
     }
 
 
     // Handles adding Deadlines
-    private void handleDeadline(String[] words, TaskList tasks, Ui ui, Storage storage) throws SXException {
+    private void handleDeadline(String[] words, TaskList tasks, Storage storage) throws SXException {
         if (words.length < 2 || !words[1].contains(" /by ")) {
             throw new SXException("Invalid deadline format! Use: deadline <task> /by <date>");
         }
+
         String[] parts = words[1].split(" /by ", 2);
-        tasks.addTask(new Deadline(parts[0], parts[1]));
+        String description = parts[0].trim();
+        String deadlineDate = parts[1].trim();
+
+        if (description.isEmpty() || deadlineDate.isEmpty()) {
+            throw new SXException("Deadline description and date cannot be empty.");
+        }
+        Task task = new Deadline(description, deadlineDate);
+        tasks.addTask(task);
         storage.save(tasks.getTasks());
+
     }
 
+
     //  Handles adding Events
-    private void handleEvent(String[] words, TaskList tasks, Ui ui, Storage storage) throws SXException {
+    private void handleEvent(String[] words, TaskList tasks, Storage storage) throws SXException {
         if (words.length < 2 || !words[1].contains(" /from ") || !words[1].contains(" /to ")) {
             throw new SXException("Invalid event format! Use: event <task> /from <start> /to <end>");
         }
@@ -107,10 +109,11 @@ public class Parser {
         String[] timeParts = parts[1].split(" /to ", 2);
         tasks.addTask(new Event(parts[0], timeParts[0], timeParts[1]));
         storage.save(tasks.getTasks());
+
     }
 
     // Handles deleting tasks
-    private void handleDelete(String[] words, TaskList tasks, Ui ui, Storage storage) throws SXException {
+    private void handleDelete(String[] words, TaskList tasks,Ui ui, Storage storage) throws SXException {
         if (words.length < 2) {
             throw new SXException("Please specify a task number to delete.");
         }
