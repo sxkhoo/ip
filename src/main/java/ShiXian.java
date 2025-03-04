@@ -1,10 +1,10 @@
 import java.io.IOException;
 import tasks.*;
 public class ShiXian {
-    private Storage storage;
-    private TaskList tasks;
-    private Ui ui;
-    private Parser parser;
+    private final Storage storage;
+    private final TaskList tasks;
+    private final Ui ui;
+    private final Parser parser;
 
     public ShiXian(String filePath) {
         ui = new Ui();
