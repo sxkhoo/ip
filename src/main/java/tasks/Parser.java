@@ -69,7 +69,7 @@ public class Parser {
         storage.save(tasks.getTasks());
     }
 
-    // Handles adding Todo tasks
+    // Handles adding to do tasks
     private void handleTodo(String[] words, TaskList tasks, Storage storage) throws SXException {
         if (words.length < 2 || words[1].trim().isEmpty()) {
             throw new SXException("Todo description cannot be empty.");

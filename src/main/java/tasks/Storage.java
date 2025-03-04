@@ -83,7 +83,7 @@ public class Storage {
         }
     }
 
-    // Create a ToDo task
+    // Create a To Do task
     private Task createToDo(String description, boolean isDone) {
         Task task = new ToDo(description);
         if (isDone) {
