@@ -9,10 +9,11 @@ public class Storage {
     private final String filePath;
     private static final DateTimeFormatter SAVE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    // Constructor
     public Storage(String filePath) {
-        this.filePath = filePath;
+        this.filePath = filePath; //set filepath
     }
-
+    //Loads tasks from the specified file.
     public List<Task> load() throws IOException {
         List<Task> tasks = new ArrayList<>();
         File file = new File(filePath);
@@ -31,7 +32,7 @@ public class Storage {
         reader.close();
         return tasks;
     }
-
+    //Saves the list of tasks to the specified file.
     public void save(List<Task> tasks) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             for (Task task : tasks) {
@@ -41,7 +42,7 @@ public class Storage {
             System.out.println("Error saving tasks to file.");
         }
     }
-
+    // Formats a task as a string to be stored in a file.
     private String formatTaskForStorage(Task task) {
         String type = (task instanceof ToDo) ? "T"
                 : (task instanceof Deadline) ? "D"
@@ -57,7 +58,7 @@ public class Storage {
         }
         return type + " | " + status + " | " + task.description;
     }
-
+    //Parses a task from a formatted string.
     private Task parseTaskFromString(String line) {
         String[] parts = line.split(" \\| ");
         if (parts.length < 3) {

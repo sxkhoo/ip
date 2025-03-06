@@ -126,6 +126,7 @@ public class Parser {
         ui.showMessage(tasks.deleteTask(index));
         storage.save(tasks.getTasks());
     }
+    // Handles Finding tasks
     private void handleFind(String[] words, TaskList tasks, Ui ui) throws SXException {
         if (words.length < 2 || words[1].trim().isEmpty()) {
             throw new SXException("Please enter a keyword to search.");
