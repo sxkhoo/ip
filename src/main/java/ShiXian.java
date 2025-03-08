@@ -5,7 +5,7 @@ public class ShiXian {
     private TaskList tasks;
     private final Ui ui;
     private final Parser parser;
-
+    //Constructs a ShiXian instance with the specified file path for task storage.
     public ShiXian(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -17,7 +17,7 @@ public class ShiXian {
             tasks = new TaskList();
         }
     }
-
+    //Runs the main execution loop of the application.
     public void run() {
         ui.showWelcomeMessage();
         boolean isRunning = true;
@@ -28,7 +28,7 @@ public class ShiXian {
         }
         ui.showExitMessage();
     }
-
+    //The main entry point of the ShiXian application.
     public static void main(String[] args) {
         new ShiXian("./data/tasks.txt").run();
     }
