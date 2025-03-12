@@ -5,7 +5,7 @@ public class Parser {
         try {
             String[] words = userInput.split(" ", 2);
             String command = words[0];
-
+            //Handles different input command from user.
             switch (command) {
                 case "bye":
                     return false;
@@ -120,7 +120,7 @@ public class Parser {
     // Handles deleting tasks
     private void handleDelete(String[] words, TaskList tasks,Ui ui, Storage storage) throws SXException {
         if (words.length < 2) {
-            throw new SXException("Please specify a task number to delete.");
+            throw new SXException("Please specify a task number to delete."); //Ensure task number is given for deletion
         }
         int index = Integer.parseInt(words[1]) - 1;
         ui.showMessage(tasks.deleteTask(index));

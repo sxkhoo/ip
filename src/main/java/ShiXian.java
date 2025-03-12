@@ -20,6 +20,7 @@ public class ShiXian {
     //Runs the main execution loop of the application.
     public void run() {
         ui.showWelcomeMessage();
+        ui.showLogo();
         boolean isRunning = true;
 
         while (isRunning) {
