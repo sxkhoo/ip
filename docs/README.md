@@ -10,7 +10,7 @@ ShiXian Task Manager is a **command-line task management application** that allo
 
 ## **Installation**
 ### **Prerequisites:**
-- Java **11 or later** must be installed on your system.
+- Java **17** must be installed on your system.
 
 ### **Steps to Run ShiXian:**
 1. **Download** the `ip.jar` file from the official repository.
