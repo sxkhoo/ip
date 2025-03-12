@@ -2,7 +2,7 @@
 
 ## **Screenshot of the bot**
 ![Screenshot](Screenshot.png)
-
+--------------------------------------------------------------------------------------------
 ## **Introduction**
 ShiXian Task Manager is a **command-line task management application** that allows users to efficiently **track, manage, and organize tasks**. The application supports adding, marking, unmarking, deleting, and finding tasks, including different task types such as To-Dos, Deadlines, and Events.
 
