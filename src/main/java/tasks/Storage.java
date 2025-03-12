@@ -34,14 +34,32 @@ public class Storage {
     }
     //Saves the list of tasks to the specified file.
     public void save(List<Task> tasks) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            for (Task task : tasks) {
-                writer.write(formatTaskForStorage(task) + "\n");
+        try {
+            File file = new File(filePath);
+            File directory = file.getParentFile();
+
+            // Create the directory if it does not exist
+            if (directory != null && !directory.exists()) {
+                directory.mkdirs();
+            }
+
+            // Create the file if it does not exist
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            // Write tasks to the file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                for (Task task : tasks) {
+                    writer.write(formatTaskForStorage(task) + "\n");
+                }
             }
         } catch (IOException e) {
-            System.out.println("Error saving tasks to file.");
+            System.err.println("Error saving tasks to file: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
     // Formats a task as a string to be stored in a file.
     private String formatTaskForStorage(Task task) {
         String type = (task instanceof ToDo) ? "T"
