@@ -11,8 +11,23 @@ public class Ui {
     public void showWelcomeMessage() {
         System.out.println("Hello! I'm Shi Xian.");
         System.out.println("What can I do for you?");
+        System.out.println("Please input your question below the logo");
         System.out.println("---------------------------------");
+
     }
+    //Personalised logo
+    public void showLogo() {
+            String logo = """
+          ███████╗██╗  ██╗███████╗ ██╗      ██╗ ███ ██╗███  ███╗   ██╗
+          ██╔════╝██║  ██║  ██║══╝  ██║    ██║  ██║ ██╔══██╗████╗  ██║
+          ███████╗███████║  ██║       █████║    ██   █████║ ██╔██╗ ██║
+          ╚════██║██╔══██║  ██║     ██╔════██║  ██║ ██╔══██║██║╚██╗██║
+          ███████║██║  ██║███████╗ ██║      ██║ ██║ ██║  ██║██║ ╚████║
+          ╚══════╝╚═╝  ╚═╝╚══════╝ ╚═╝      ╚═╝ ╚═╝ ╚═╝  ╚═╝╚═╝  ╚═══╝
+        """;
+
+            System.out.println(logo);
+        }
     //Receives input from user typing.
     public String getUserInput() {
         return scanner.nextLine().trim();
